@@ -104,7 +104,7 @@ class ClientHandler extends Thread {
         UserActivity userActivity = new UserActivity(email, connection);
         userActivity.addLogInInfo();
         UserRole role = UserRole.valueOf(userRole.toUpperCase());
-        RoleHandler handler = RoleHandlerFactory.getHandler(role, connection, in, out);
+        RoleHandler handler = RoleHandlerFactory.getHandler(role, connection, in, out,email);
         handler.process();
         userActivity.addLogOutInfo();
     }

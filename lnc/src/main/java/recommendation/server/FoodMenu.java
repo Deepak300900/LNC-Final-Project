@@ -5,9 +5,11 @@ import java.sql.*;
 
 public class FoodMenu {
     private static final String ADD_MENU_ITEM_SQL = "INSERT INTO foodMenu (name, price, rating, category) VALUES (?, ?, ?, ?)";
-    private static final String UPDATE_MENU_ITEM_SQL = "UPDATE foodMenu SET name = ?, price = ?, rating = ?, category = ? WHERE id = ?";
+    private static final String UPDATE_MENU_ITEM_SQL = "UPDATE foodMenu SET name = ?, price = ?, category = ? WHERE id = ?";
     private static final String DELETE_MENU_ITEM_SQL = "DELETE FROM foodMenu WHERE id = ?";
     private static final String SHOW_MENU_SQL = "SELECT id, name, price, rating, category FROM foodMenu";
+    private static final String GET_FEEDBACK_RATINGS_SQL = "SELECT rating FROM UserfeedBack WHERE foodItemId = ?";
+    private static final String UPDATE_FOOD_MENU_RATING_SQL = "UPDATE foodMenu SET rating = ? WHERE id = ?";
 
     private final Connection connection;
 
@@ -29,13 +31,12 @@ public class FoodMenu {
         }
     }
 
-    public boolean updateMenuItem(int id, String name, double price, double rating, String category) {
+    public boolean updateMenuItem(int id, String name, double price, String category) {
         try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_MENU_ITEM_SQL)) {
             pstmt.setString(1, name);
             pstmt.setDouble(2, price);
-            pstmt.setDouble(3, rating);
-            pstmt.setString(4, category);
-            pstmt.setInt(5, id);
+            pstmt.setString(3, category);
+            pstmt.setInt(4, id);
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -80,6 +81,38 @@ public class FoodMenu {
             System.err.println("Error retrieving menu items: " + e.getMessage());
             out.println("Error retrieving menu items: " + e.getMessage());
             out.flush();
+        }
+    }
+
+    public boolean updateAverageRating(int foodItemId) {
+        try (PreparedStatement getRatingsStmt = connection.prepareStatement(GET_FEEDBACK_RATINGS_SQL)) {
+            getRatingsStmt.setInt(1, foodItemId);
+            ResultSet rs = getRatingsStmt.executeQuery();
+
+            double totalRating = 0.0;
+            int count = 0;
+
+            while (rs.next()) {
+                totalRating += rs.getDouble("rating");
+                count++;
+            }
+
+            if (count == 0) {
+                System.err.println("No ratings found for food item ID: " + foodItemId);
+                return false;
+            }
+
+            double averageRating = totalRating / count;
+
+            try (PreparedStatement updateRatingStmt = connection.prepareStatement(UPDATE_FOOD_MENU_RATING_SQL)) {
+                updateRatingStmt.setDouble(1, averageRating);
+                updateRatingStmt.setInt(2, foodItemId);
+                int rowsAffected = updateRatingStmt.executeUpdate();
+                return rowsAffected > 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error updating average rating: " + e.getMessage());
+            return false;
         }
     }
 }

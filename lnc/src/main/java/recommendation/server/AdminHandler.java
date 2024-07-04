@@ -72,10 +72,9 @@ public class AdminHandler implements RoleHandler {
         int id = inputReader.readInt("Enter ID:");
         String name = inputReader.readString("Enter name:");
         double price = inputReader.readDouble("Enter price:");
-        double rating = inputReader.readDouble("Enter rating:");
         String category = inputReader.readString("Enter category:");
 
-        boolean result = foodMenu.updateMenuItem(id, name, price, rating, category);
+        boolean result = foodMenu.updateMenuItem(id, name, price, category);
         printOperationResult(result, "Menu item updated successfully", "Failed to update menu item");
     }
 

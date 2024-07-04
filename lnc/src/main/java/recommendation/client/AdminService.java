@@ -20,7 +20,7 @@ public class AdminService {
             showMenuOptions();
             String input = userInput.readLine().trim();
             out.println(input);
-            if ("6".equals(input)) {
+            if ("7".equals(input)) {
                 System.out.println("Log Out Successfully");
                 break;
             }
@@ -34,7 +34,8 @@ public class AdminService {
         System.out.println("3. DELETE_MENU_ITEM");
         System.out.println("4. SHOW_MENU");
         System.out.println("5. VIEW_USER_ACTIVITY");
-        System.out.println("6. EXIT");
+        System.out.println("6. Show Discardable Food");
+        System.out.println("7. EXIT");
         System.out.print("Enter your choice: ");
     }
 
@@ -55,6 +56,9 @@ public class AdminService {
             case "5":
                 handleViewUserActivity();
                 break;
+            case "6":
+                handleDiscardableFoodOptions();
+                break;
             default:
                 System.out.println("Invalid command");
         }
@@ -64,8 +68,6 @@ public class AdminService {
         System.out.print("Enter name: ");
         out.println(userInput.readLine());
         System.out.print("Enter price: ");
-        out.println(userInput.readLine());
-        System.out.print("Enter rating: ");
         out.println(userInput.readLine());
         System.out.print("Enter category: ");
         out.println(userInput.readLine());
@@ -78,8 +80,6 @@ public class AdminService {
         System.out.print("Enter name: ");
         out.println(userInput.readLine());
         System.out.print("Enter price: ");
-        out.println(userInput.readLine());
-        System.out.print("Enter rating: ");
         out.println(userInput.readLine());
         System.out.print("Enter category: ");
         out.println(userInput.readLine());
@@ -105,6 +105,38 @@ public class AdminService {
         String serverResponse;
         while (!(serverResponse = in.readLine()).equalsIgnoreCase("End of User Activity")) {
             System.out.println(serverResponse);
+        }
+    }
+
+    private void handleDiscardableFoodOptions() throws IOException {
+
+        String serverResponse;
+        while (!(serverResponse = in.readLine()).equalsIgnoreCase("End of Response")) {
+            System.out.println(serverResponse);
+        }
+
+        System.out.println("1. Delete Discardable Food");
+        System.out.println("2. Store Discardable Food Data");
+        System.out.print("Enter your choice: ");
+        String choice = userInput.readLine();
+        out.println(choice);
+        out.flush();
+        
+        if ("1".equals(choice)) {
+            System.out.print("Enter Food Item ID to delete: ");
+            out.println(Integer.parseInt(userInput.readLine()));
+            out.flush();
+        } else if ("2".equals(choice)) {
+            System.out.print("Enter Food Item ID to store in discardable table: ");
+            out.println(Integer.parseInt(userInput.readLine()));
+            out.flush();
+        } else {
+            System.out.println("Invalid option. Please try again.");
+        }
+        
+        String serverResponse2;
+        while (!(serverResponse2 = in.readLine()).equalsIgnoreCase("End of Response")) {
+            System.out.println(serverResponse2);
         }
     }
 }
