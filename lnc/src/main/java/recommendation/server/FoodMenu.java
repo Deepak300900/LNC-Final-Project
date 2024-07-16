@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.sql.*;
 
 public class FoodMenu {
-    private static final String ADD_MENU_ITEM_SQL = "INSERT INTO foodMenu (name, price, rating, category) VALUES (?, ?, ?, ?)";
+    private static final String ADD_MENU_ITEM_SQL = "INSERT INTO foodMenu (name, price, category) VALUES (?, ?, ?)";
     private static final String UPDATE_MENU_ITEM_SQL = "UPDATE foodMenu SET name = ?, price = ?, category = ? WHERE id = ?";
     private static final String DELETE_MENU_ITEM_SQL = "DELETE FROM foodMenu WHERE id = ?";
     private static final String SHOW_MENU_SQL = "SELECT id, name, price, rating, category FROM foodMenu";
@@ -17,12 +17,12 @@ public class FoodMenu {
         this.connection = connection;
     }
 
-    public boolean addMenuItem(String name, double price, double rating, String category) {
+    public boolean addMenuItem(String name, double price, String category) {
         try (PreparedStatement pstmt = connection.prepareStatement(ADD_MENU_ITEM_SQL)) {
             pstmt.setString(1, name);
             pstmt.setDouble(2, price);
-            pstmt.setDouble(3, rating);
-            pstmt.setString(4, category);
+            //pstmt.setDouble(3, rating);
+            pstmt.setString(3, category);
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {

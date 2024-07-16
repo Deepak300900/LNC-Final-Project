@@ -13,23 +13,40 @@ public class Server {
     public static final String DB_PASSWORD = "Deepak@300900";
 
     public static void main(String[] args) {
-        start();
+        new Server().start();
     }
 
-    private static void start() {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+    public void start() {
+        try (ServerSocket serverSocket = createServerSocket()) {
             System.out.println("Server is running on port " + PORT);
-            while (running) {
-                handleClient(serverSocket.accept());
+            while (isRunning()) {
+                acceptClientConnection(serverSocket);
             }
         } catch (IOException e) {
-            System.err.println("Server socket error: " + e.getMessage());
+            handleServerException(e);
         }
     }
 
-    private static void handleClient(Socket clientSocket) {
+    private ServerSocket createServerSocket() throws IOException {
+        return new ServerSocket(PORT);
+    }
+
+    private boolean isRunning() {
+        return running;
+    }
+
+    private void acceptClientConnection(ServerSocket serverSocket) throws IOException {
+        Socket clientSocket = serverSocket.accept();
+        handleClient(clientSocket);
+    }
+
+    private void handleClient(Socket clientSocket) {
         System.out.println("New client connected: " + clientSocket);
         new ClientHandler(clientSocket).start();
+    }
+
+    private void handleServerException(IOException e) {
+        System.err.println("Server socket error: " + e.getMessage());
     }
 
     public static void stop() {

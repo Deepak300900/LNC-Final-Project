@@ -2,7 +2,6 @@ package recommendation.client;
 
 import java.io.*;
 import java.net.Socket;
-//import java.sql.Connection;
 import java.sql.SQLException;
 
 public class ClientService {
@@ -17,48 +16,54 @@ public class ClientService {
     }
 
     public void start() throws IOException, SQLException {
-        authenticateUser();
-
-        String serverResponse = in.readLine();
-        System.out.println("=> " + serverResponse);
-
-        if (serverResponse.startsWith("ROLE:")) {
-            String role = serverResponse.substring(5).toUpperCase();
-            handleRole(role);
+        if (authenticateUser()) {
+            handleServerResponse(in.readLine());
         } else {
             System.out.println("Authentication failed or invalid response from server.");
         }
     }
 
-    private void authenticateUser() throws IOException {
+    private boolean authenticateUser() throws IOException {
+        sendEmail();
+        return promptPasswordIfRequested();
+    }
+
+    private void sendEmail() throws IOException {
         System.out.print("Enter email: ");
         String email = userInput.readLine();
         out.println("EMAIL:" + email);
+    }
 
+    private boolean promptPasswordIfRequested() throws IOException {
         String serverResponse = in.readLine();
-
         if ("PASSWORD:".equals(serverResponse)) {
-            System.out.print("Enter password: ");
-            String password = userInput.readLine();
-            out.println(password);
+            sendPassword();
+            return true;
         } else {
             System.out.println("Incorrect Email");
+            return false;
+        }
+    }
+
+    private void sendPassword() throws IOException {
+        System.out.print("Enter password: ");
+        String password = userInput.readLine();
+        out.println(password);
+    }
+
+    private void handleServerResponse(String serverResponse) throws IOException, SQLException {
+        System.out.println("=> " + serverResponse);
+        if (serverResponse.startsWith("ROLE:")) {
+            handleRole(serverResponse.substring(5).toUpperCase());
         }
     }
 
     private void handleRole(String role) throws IOException, SQLException {
-        switch (role) {
-            case "ADMIN":
-                new AdminService(userInput, in, out).handleCommands();
-                break;
-            case "CHEF":
-                new ChefService(userInput, in, out).handleCommands();
-                break;
-            case "EMPLOYEE":
-                new EmployeeService(userInput, in, out).handleCommands();
-                break;
-            default:
-                System.out.println("Unknown role: " + role);
+        RoleService roleService = RoleServiceFactory.getRoleService(role, userInput, in, out);
+        if (roleService != null) {
+            roleService.handleCommands();
+        } else {
+            System.out.println("Unknown role: " + role);
         }
     }
 }
