@@ -2,15 +2,16 @@ package recommendation.server.handlers;
 
 import java.sql.*;
 
-import recommendation.server.drivers.Server;
-
 public class DatabaseConnectionHandler {
     private static DatabaseConnectionHandler instance;
     private Connection connection;
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/deepakdatabase";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "Deepak@300900";
 
     private DatabaseConnectionHandler() {
         try {
-            this.connection = DriverManager.getConnection(Server.DB_URL, Server.DB_USER, Server.DB_PASSWORD);
+            this.connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         } catch (SQLException e) {
             System.err.println("Error connecting to database: " + e.getMessage());
         }

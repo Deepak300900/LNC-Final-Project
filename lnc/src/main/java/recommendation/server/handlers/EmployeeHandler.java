@@ -33,7 +33,6 @@ public class EmployeeHandler implements RoleHandler {
     private void handleEmployeeCommands() throws IOException {
         String command;
         while ((command = inputReader.readString("Enter command:")) != null && !"EXIT".equalsIgnoreCase(command)) {
-                System.out.println("Comand: " + command);
             EmployeeCommand employeeCommand = EmployeeCommandFactory.getCommand(command, connection, out, inputReader, currentUser);
             if (employeeCommand != null) {
                 employeeCommand.execute();

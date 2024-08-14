@@ -20,6 +20,8 @@ public class UpdateProfileCommand implements EmployeeCommand {
 
     @Override
     public void execute() throws IOException, InvalidInputException {
+        System.out.println("\n-----------------------------------------------------------------------\n");
+        System.out.println("Enter your new data if you dont want to update any thing then enter same thing:");
         out.println("UPDATE_PROFILE");
         System.out.print("Enter new name: ");
         String newName = userInput.readLine().trim();
@@ -29,12 +31,14 @@ public class UpdateProfileCommand implements EmployeeCommand {
         String newPassword = userInput.readLine().trim();
         out.println(newPassword);
 
-        System.out.print("Enter new category: ");
+        System.out.print("Select new category: \n  1. Vegeterian\n  2. Eggeterian\n  3. NonVegeterian\nEnter choice: ");
         String newCategory = userInput.readLine().trim();
+        newCategory = "1".equals(newCategory) ? "Vegeterian" : "2".equals(newCategory) ? "Eggeterian" : "3".equals(newCategory) ? "NonVegeterian" : "";
         out.println(newCategory);
 
-        System.out.print("Enter new test: ");
+        System.out.print("Select new test: \n  1. Spicy\n  2. Sweet\n  3. Salty\nEnter choice: ");
         String newTest = userInput.readLine().trim();
+        newTest = "1".equals(newTest) ? "Spicy" : "2".equals(newTest) ? "Sweet" : "3".equals(newTest) ? "Salty" : "";
         out.println(newTest);
         out.flush();
 

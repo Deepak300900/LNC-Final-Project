@@ -10,7 +10,9 @@ public class DiscardableFoodProcessCommand implements ChefCommand{
    @Override
     public void execute(BufferedReader userInput, PrintWriter out, BufferedReader in) throws IOException {
         ServerResponseService.printServerResponse(in);
+        if("FOOD_AVAILABLE".equals(in.readLine())){
         handle(userInput, out, in);
+        }
     }
 
 
@@ -27,7 +29,7 @@ public class DiscardableFoodProcessCommand implements ChefCommand{
                 handleDeleteFoodItem(userInput, out);
                 break;
             case "2":
-                handleStoreFoodItem(userInput, out);
+                handleStoreFoodItem(userInput, out, in);
                 break;
             default:
                 System.out.println("Invalid option. Please try again.");
@@ -41,8 +43,11 @@ public class DiscardableFoodProcessCommand implements ChefCommand{
         out.println(Integer.parseInt(userInput.readLine()));
         out.flush();
     }
-
-    private static void handleStoreFoodItem(BufferedReader userInput, PrintWriter out) throws IOException {
+                
+    private static void handleStoreFoodItem(BufferedReader userInput, PrintWriter out, BufferedReader in) throws IOException {
+        if("NOT_AVAILABLE".equals(in.readLine())){
+          return;
+        }
         System.out.print("Enter Food Item ID to store in discardable table: ");
         out.println(Integer.parseInt(userInput.readLine()));
         out.flush();

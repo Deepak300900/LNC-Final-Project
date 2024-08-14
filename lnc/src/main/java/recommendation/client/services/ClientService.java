@@ -18,10 +18,35 @@ public class ClientService {
     }
 
     public void start() throws IOException, SQLException {
-        if (authenticateUser()) {
-            handleServerResponse(in.readLine());
-        } else {
-            System.out.println("Authentication failed or invalid response from server.");
+        boolean isAuthenticated = false;
+        while (true) {
+            int option = displayOptionsAndGetSelection();
+            if (option == 1) {
+                isAuthenticated = authenticateUser();
+                if (!isAuthenticated) {
+                    System.out.println("Authentication failed. Please try again.");
+                }
+            } else if (option == 2) {
+                System.out.println("Exiting...");
+                break;
+            } else {
+                System.out.println("Invalid choice. Please try again.");
+            }
+        
+            if (isAuthenticated) {
+                handleServerResponse(in.readLine());
+            }
+            
+        }
+    }
+
+    private int displayOptionsAndGetSelection() throws IOException {
+        MenuDisplayService.showLoginMenu();
+        try {
+            String choice = userInput.readLine();
+            return Integer.parseInt(choice);
+        } catch (NumberFormatException e) {
+            return -1;
         }
     }
 
@@ -54,7 +79,13 @@ public class ClientService {
     }
 
     private void handleServerResponse(String serverResponse) throws IOException, SQLException {
-        System.out.println("=> " + serverResponse);
+        System.out.println("-------------------------------------------------------------\n");
+        String response = in.readLine();
+        if("Incorrect password".equals(response)){
+                System.out.println("Wrong Password. Please try again.. ");
+        }else{
+        System.out.println("Hello " + response + "! You're successfully logged in. Let's get started!");
+        }
         if (serverResponse.startsWith("ROLE:")) {
             handleRole(serverResponse.substring(5).toUpperCase());
         }

@@ -23,9 +23,7 @@ public class ClientHandler extends Thread {
             requestHandler.handleRequests(in, out);
         } catch (IOException e) {
             handleError("Error handling client: ", e);
-        } finally {
-            dbHandler.closeConnection();
-        }
+        } 
     }
 
     private void handleError(String message, Exception e) {

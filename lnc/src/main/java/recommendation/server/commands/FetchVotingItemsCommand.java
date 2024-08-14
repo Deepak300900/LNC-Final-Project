@@ -44,7 +44,7 @@ public class FetchVotingItemsCommand implements EmployeeCommand {
         foodItems.sort(Comparator.comparing(FoodItem::getAverageRating).reversed());
         for (FoodItem item : foodItems) {
             sendVotingItem(item);
-        }
+        }  
         sendEndOfItems();
     }
 

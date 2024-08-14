@@ -14,6 +14,7 @@ public class FoodVoteHandleCommand implements EmployeeCommand {
     private static final String END_OF_ITEMS = "END_OF_ITEMS";
     private static final String SAVE_VOTE = "SAVE_VOTE";
     private static final String VOTE_SAVED = "VOTE_SAVED";
+    private static final String INVALID_VOTE = "INVALID_VOTE";
 
     private final BufferedReader in;
     private final PrintWriter out;
@@ -27,7 +28,6 @@ public class FoodVoteHandleCommand implements EmployeeCommand {
 
     @Override
     public void execute() throws IOException, InvalidInputException {
-        System.out.println("Fetching food items for voting...");
         out.println(FETCH_VOTING_ITEMS);
 
         List<Integer> foodItemIds = new ArrayList<>();
@@ -42,6 +42,7 @@ public class FoodVoteHandleCommand implements EmployeeCommand {
     }
 
     private void displayFoodItemsForVoting(List<Integer> foodItemIds) throws IOException {
+        System.out.println("\n------------------------------------------------------------\n");
         System.out.println("Food Items for Tomorrow:");
         System.out.println("-------------------------------------------");
         System.out.printf("%-5s | %-20s | %-10s |%n", "ID", "Name", "Price");
@@ -87,10 +88,12 @@ public class FoodVoteHandleCommand implements EmployeeCommand {
 
             out.println(SAVE_VOTE);
             out.println(id);
-
-            if (in.readLine().equalsIgnoreCase(VOTE_SAVED)) {
+            String response = in.readLine();
+            if (response.equalsIgnoreCase(VOTE_SAVED)) {
                 System.out.println("Vote submitted successfully.");
-            } else {
+            } else if(response.equalsIgnoreCase(INVALID_VOTE)){
+                System.out.println("You already gave vote for this Item.");
+            }else {
                 System.out.println("Failed to submit vote.");
             }
         } catch (NumberFormatException e) {

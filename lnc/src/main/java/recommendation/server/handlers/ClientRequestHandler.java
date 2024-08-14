@@ -3,13 +3,13 @@ package recommendation.server.handlers;
 import java.io.*;
 import java.sql.*;
 
-import recommendation.server.drivers.Server;
 import recommendation.server.factory.RoleHandlerFactory;
 import recommendation.server.helpers.UserActivityHelper;
 import recommendation.server.models.UserRole;
 
 public class ClientRequestHandler {
     private final Connection connection;
+    private String userName;
 
     public ClientRequestHandler(Connection connection) {
         this.connection = connection;
@@ -21,9 +21,10 @@ public class ClientRequestHandler {
             System.out.println("Received from client: " + inputLine);
             if (inputLine.startsWith("EMAIL:")) {
                 handleEmailRequest(inputLine, in, out);
-            }
-            if (inputLine.equalsIgnoreCase("exit") || inputLine.equalsIgnoreCase("shutdown")) {
-                Server.stop();
+                System.out.println("User Authenticated");
+            } else if (inputLine.equalsIgnoreCase("exit")) {
+                System.out.println("User Exited ");
+                out.println("Goodbye!");
                 break;
             }
         }
@@ -35,9 +36,11 @@ public class ClientRequestHandler {
             if (emailExists(email)) {
                 out.println("PASSWORD:"); 
                 String password = in.readLine();
-                validatePassword(email, password, out, in);
+                if (!validatePassword(email, password, out, in)) {
+                    out.println("Incorrect password");
+                }
             } else {
-                out.println("Email not found");
+                out.println("Email not found. Please try again.");
             }
         } catch (SQLException e) {
             handleError("Database error: ", e, out);
@@ -52,12 +55,17 @@ public class ClientRequestHandler {
         String sql = "SELECT password, username, userRole FROM userinfo WHERE email = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, email);
-            ResultSet rs = pstmt.executeQuery();
-            return rs.next();
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    this.userName = rs.getString("username"); 
+                    return true;
+                }
+                return false;
+            }
         }
     }
 
-    private void validatePassword(String email, String password, PrintWriter out, BufferedReader in) throws SQLException {
+    private boolean validatePassword(String email, String password, PrintWriter out, BufferedReader in) throws SQLException {
         String sql = "SELECT password, username, userRole FROM userinfo WHERE email = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, email);
@@ -68,18 +76,21 @@ public class ClientRequestHandler {
 
                 if (password.equals(storedPassword)) {
                     handleSuccessfulLogin(email, userRole, out, in);
+                    return true;
                 } else {
                     out.println("Incorrect password");
                 }
             }
         }
+        return false;
     }
 
     private void handleSuccessfulLogin(String email, String userRole, PrintWriter out, BufferedReader in) throws SQLException {
         out.println("ROLE:" + userRole.toUpperCase());
+        out.println(this.userName);
         UserActivityHelper userActivity = new UserActivityHelper(email, connection);
         userActivity.addLogInInfo();
-        UserRole role = UserRole.valueOf(userRole.toUpperCase()) ;
+        UserRole role = UserRole.valueOf(userRole.toUpperCase());
         RoleHandler handler = RoleHandlerFactory.getHandler(role, connection, in, out, email);
         handler.process();
         userActivity.addLogOutInfo();

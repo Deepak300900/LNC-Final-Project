@@ -56,24 +56,23 @@ public class RecommendationHandler {
     }
 
     private void storeRecommendations(Connection connection) {
-        String sql = "INSERT INTO recommendedfood (foodId, sentimentScore, date) VALUES (?, ?, CURDATE()) " +
-        "ON DUPLICATE KEY UPDATE sentimentScore = VALUES(sentimentScore)";
+        String sql = "UPDATE Foodmenu SET SentimentScores = ? WHERE id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             for (Map.Entry<String, Double> entry : recommendedFood.entrySet()) {
                 String foodItemId = entry.getKey();
                 double sentimentScore = entry.getValue();
-
-                pstmt.setString(1, foodItemId);
-                pstmt.setDouble(2, sentimentScore);
-
+    
+                pstmt.setDouble(1, sentimentScore);
+                pstmt.setString(2, foodItemId);
                 pstmt.executeUpdate();
                 
-                System.out.println("Inserted into recommended_food table: Food Item ID: " + foodItemId + ", Sentiment Score: " + sentimentScore);
+                System.out.println("Updated Foodmenu table: Food Item ID: " + foodItemId + ", Sentiment Score: " + sentimentScore);
             }
         } catch (SQLException e) {
-            System.err.println("Error inserting recommendations into database: " + e.getMessage());
+            System.err.println("Error updating Foodmenu table: " + e.getMessage());
         }
     }
+    
 
     
 }

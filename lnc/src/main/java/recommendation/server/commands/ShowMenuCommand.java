@@ -18,7 +18,7 @@ public class ShowMenuCommand implements AdminCommand {
     @Override
     public void execute() {
         FoodMenuHelper foodMenu = new FoodMenuHelper(connection);
-        out.println("Current Menu:");
+        out.println("Current Food Menu:");
         out.flush();
         foodMenu.showMenu(out);
     }

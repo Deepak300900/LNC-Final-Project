@@ -24,11 +24,13 @@ public class ChefService implements RoleService {
         while (true) {
             MenuDisplayService.showChefMenu();
             String choice = userInput.readLine();
-            out.println(choice);
-            out.flush();
-            if ("exit".equalsIgnoreCase(choice)) {
+            if ("8".equalsIgnoreCase(choice)) {
+                System.out.println("Log out Successfully");
+                out.println("Exit");
                 return;
             }
+            out.println(choice);
+            out.flush();
 
             ChefCommand command = commandFactory.getCommand(choice);
             command.execute(userInput, out, in);

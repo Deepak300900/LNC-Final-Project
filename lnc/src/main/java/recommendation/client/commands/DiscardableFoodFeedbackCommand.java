@@ -39,6 +39,12 @@ public class DiscardableFoodFeedbackCommand implements EmployeeCommand {
 
         out.println(DISCARDABLE_ITEMS_FEEDBACK);
         out.println(foodItemId);
+        String response = in.readLine();
+        if("INVALID_FEEDBACK".equals(response)){
+                System.out.println("Feedback has been already you gaved.");
+                return;
+        }
+        
         System.out.println("What is wrong with this item? ");
         out.println(userInput.readLine());
         System.out.println("What can we improve in this? ");
@@ -49,12 +55,13 @@ public class DiscardableFoodFeedbackCommand implements EmployeeCommand {
         if (in.readLine().equalsIgnoreCase(FEEDBACK_SAVED)) {
             System.out.println("Feedback on discardable item submitted successfully.");
         } else {
-            System.out.println("Failed to submit feedback on discardable item.");
+            System.out.println("Failed to submit feedback. Please try again..");
         }
     }
 
     private static void printFoodItemDetail(String[] foodItemDetails) {
-        System.out.println("\nDiscardable Food Item Details:");
+        System.out.println("\n-----------------------------------------------------\n");
+        System.out.println("Discardable Food Item Details:");
         System.out.println("Food Item Id: " + foodItemDetails[0]);
         System.out.println("Name: " + foodItemDetails[1]);
         System.out.println("Price: $" + foodItemDetails[2] + "\n");

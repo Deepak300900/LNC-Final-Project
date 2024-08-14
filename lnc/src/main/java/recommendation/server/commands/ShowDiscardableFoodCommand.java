@@ -19,8 +19,11 @@ public class ShowDiscardableFoodCommand implements ChefCommand {
 
     @Override
     public void execute() throws IOException, SQLException {
-        DiscardableFoodHelper discardableFoodHandler = new DiscardableFoodHelper(connection, in, out);
-        discardableFoodHandler.showDiscardableFood();
-        discardableFoodHandler.handleDiscardableFoodCommands();
+        DiscardableFoodHelper discardableFoodHelper = new DiscardableFoodHelper(connection, in, out);
+        boolean isFoodAvailabel = discardableFoodHelper.showDiscardableFood();
+        out.println(isFoodAvailabel== true ? "FOOD_AVAILABLE": "");
+        if(isFoodAvailabel){
+        discardableFoodHelper.handleDiscardableFoodCommands();
+        }    
     }
 }

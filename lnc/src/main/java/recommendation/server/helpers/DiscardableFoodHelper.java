@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
+import java.time.LocalDate;
 
 import recommendation.server.handlers.NotificationHandler;
 
@@ -18,19 +19,28 @@ public class DiscardableFoodHelper {
         this.out = out;
     }
 
-    public void showDiscardableFood() {
-        String query = "SELECT fm.id, fm.name, fm.price, rf.sentimentscore " +
-                       "FROM foodmenu fm " +
-                       "JOIN recommendedfood rf ON fm.id = rf.foodId " +
-                       "WHERE rf.sentimentscore < 55 " ;
+    public boolean showDiscardableFood() {
+        String query = "SELECT id, name, price, SentimentScores FROM foodmenu WHERE SentimentScores < 55 AND Rating <= 2";
 
+        boolean isDiscardableFoodAvailable = false;
+    
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
-            printDiscardableFoodTable(rs);
+            
+            if (rs.isBeforeFirst()) {
+                isDiscardableFoodAvailable = true;
+                printDiscardableFoodTable(rs);
+            } else {
+                out.println("No discardable food items found.");
+                out.println("End of Response");
+                out.flush();
+            }
         } catch (SQLException e) {
             handleException(e);
         }
+        return isDiscardableFoodAvailable;
     }
+    
 
     private void printDiscardableFoodTable(ResultSet rs) throws SQLException {
         out.println("+----+--------------+-------+----------------+");
@@ -41,7 +51,7 @@ public class DiscardableFoodHelper {
             int id = rs.getInt("id");
             String name = rs.getString("name");
             double price = rs.getDouble("price");
-            double sentimentScore = rs.getDouble("sentimentscore");
+            double sentimentScore = rs.getDouble("SentimentScores");
             out.printf("| %2d | %-12s | %5.2f | %14.2f |%n", id, name, price, sentimentScore);
         }
 
@@ -92,7 +102,17 @@ public class DiscardableFoodHelper {
 
     private void storeDiscardableFood() throws IOException, SQLException {
         try {
+             if(!isOperationAvailable()){
+                out.println("NOT_AVAILABLE");
+                out.println("This Option has been used under 30 days");
+                out.println("End of Response");
+                out.flush();
+                return;
+             }  
+
+            out.println("AVAILABLE");
             int foodItemId = Integer.parseInt(in.readLine());
+            
             String query = "INSERT INTO discardablefood (foodItemId, date) VALUES (?, CURDATE())";
             try (PreparedStatement pstmt = connection.prepareStatement(query)) {
                 pstmt.setInt(1, foodItemId);
@@ -120,6 +140,25 @@ public class DiscardableFoodHelper {
                 out.println("End of Response");
                 out.flush();
         }
+    }
+
+    private boolean isOperationAvailable() {
+
+        LocalDate dateThreshold = LocalDate.now().minusDays(30);
+        String query = "SELECT COUNT(*) FROM discardablefood WHERE date > ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setDate(1, java.sql.Date.valueOf(dateThreshold));
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) == 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return false;
     }
 
     public void showDiscardableFoodFeedback() {

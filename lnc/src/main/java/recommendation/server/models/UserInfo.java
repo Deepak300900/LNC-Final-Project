@@ -7,7 +7,6 @@ public class UserInfo {
     private String category;
     private String test;
 
-    // Getters and Setters
     public String getUsername() {
         return username;
     }

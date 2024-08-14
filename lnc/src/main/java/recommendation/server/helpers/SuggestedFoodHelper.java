@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
+//import java.time.LocalDate;
 
 import recommendation.server.handlers.NotificationHandler;
 
@@ -19,10 +20,11 @@ public class SuggestedFoodHelper {
         this.out = out;
     }
 
-    public void addFoodItemToWillPrepare() throws IOException, SQLException {
+    public void saveSuggestedFood() throws IOException, SQLException {
         try {
             int foodItemId = Integer.parseInt(in.readLine());
-            if (isFoodIdCorrect(foodItemId)) {
+            boolean isFoodIdAdded = isFoodIdAdded(foodItemId);
+            if (!isFoodIdAdded && isFoodIdCorrect(foodItemId)) {
             String query = "INSERT INTO RolloutFoodItems (foodItemId, votingCount, createdDate) VALUES (?, 0, CURRENT_DATE)";
             try (PreparedStatement pstmt = connection.prepareStatement(query)) {
                 pstmt.setInt(1, foodItemId);
@@ -40,7 +42,11 @@ public class SuggestedFoodHelper {
                 out.flush();
             }
             } else {
+                if(isFoodIdAdded){
+                out.println("This food Rollout today already");
+                }else{
                 out.println("Invalid food id. Please enter valid food Id");
+                }
                 out.println("End of Response");
                 out.flush();
           }
@@ -49,6 +55,28 @@ public class SuggestedFoodHelper {
             out.println("End of Response");
             out.flush();
         }
+    }
+
+    private boolean isFoodIdAdded(int foodId) {
+        String query = "SELECT COUNT(*) FROM rolloutfooditems WHERE foodItemId = ? AND createdDate = CURRENT_DATE";
+        //LocalDate today = LocalDate.now();
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, foodId);
+           // stmt.setDate(2, java.sql.Date.valueOf(today));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+
+                    return count != 0; 
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+        }
+
+        return true; 
     }
 
     private boolean isFoodIdCorrect(int foodId) throws SQLException {

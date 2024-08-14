@@ -12,9 +12,11 @@ import recommendation.client.interfaces.EmployeeCommand;
 public class EmployeeService implements RoleService {
     private final BufferedReader userInput;
     private final EmployeeCommandFactory commandFactory;
+    private final PrintWriter out;
 
     public EmployeeService(BufferedReader userInput, BufferedReader in, PrintWriter out) {
         this.userInput = userInput;
+        this.out = out;
         this.commandFactory = new EmployeeCommandFactory(in, out, userInput);
     }
 
@@ -22,7 +24,8 @@ public class EmployeeService implements RoleService {
         while (true) {
             MenuDisplayService.showEmployeeMenu();
             String command = userInput.readLine().trim();
-            if (command.equalsIgnoreCase("EXIT")) {
+            if (command.equalsIgnoreCase("6")) {
+                out.println("EXIT");
                 System.out.println("Log Out Successfully.");
                 break;
             }

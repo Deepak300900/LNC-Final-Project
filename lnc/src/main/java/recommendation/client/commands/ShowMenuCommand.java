@@ -14,7 +14,6 @@ public class ShowMenuCommand implements AdminCommand {
 
     @Override
     public void execute() throws IOException {
-        System.out.println("Fetching menu from server...");
         String serverResponse;
         while (!(serverResponse = in.readLine()).equalsIgnoreCase("End of Menu")) {
             System.out.println(serverResponse);

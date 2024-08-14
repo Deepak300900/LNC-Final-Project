@@ -9,10 +9,6 @@ import recommendation.server.handlers.ClientHandler;
 public class Server {
     private static final int PORT = 1234;
     private static boolean running = true;
-
-    public static final String DB_URL = "jdbc:mysql://localhost:3306/deepakdatabase";
-    public static final String DB_USER = "root";
-    public static final String DB_PASSWORD = "Deepak@300900";
       
     public static void main(String[] args) {
         new Server().start();

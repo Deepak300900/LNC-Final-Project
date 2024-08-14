@@ -37,9 +37,8 @@ public class ShowNotificationCommand implements EmployeeCommand {
             userStmt.setString(1, currentUser);
             try (ResultSet rs = userStmt.executeQuery()) {
                 if (rs.next()) {
-                    userTest = rs.getString("test");
-                    userCategory = rs.getString("category");
-                    System.out.println("Test: " + userTest + " User category: " + userCategory);
+                    userTest =  rs.getString("test");
+                    userCategory = " " + rs.getString("category");
                 } else {
                     out.println("ERROR: User not found.");
                     out.flush();
@@ -72,11 +71,12 @@ public class ShowNotificationCommand implements EmployeeCommand {
 
                     notifications.add(new Notification(notificationId, subject, details, containsTest, containsCategory));
                 }
-                System.out.println("come here 1" + notifications);
                 notifications.sort(Comparator.comparing((Notification n) -> {
-                    return n.containsTest && n.containsCategory;
+                    return n.containsCategory && n.containsTest;
                 }).reversed());
-               System.out.println("Come here 2");
+                 notifications.sort(Comparator.comparing((Notification n) -> {
+                        return n.containsCategory;
+                    }).reversed());
                 out.println("Notifications ==>");  
                 for (Notification notification : notifications) {
                     out.println("=> " + notification.subject + " details: " + notification.details);

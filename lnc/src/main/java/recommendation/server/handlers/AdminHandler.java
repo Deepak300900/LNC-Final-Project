@@ -40,7 +40,7 @@ public class AdminHandler implements RoleHandler {
                 System.out.println("Invalid command");
             }
         }
-        System.out.println("Log Out Successfully.");
+        //System.out.println("Log Out Successfully.");
     }
 
     private void handleAdminError(String errorMessage) {

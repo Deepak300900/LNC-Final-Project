@@ -11,7 +11,9 @@ public class SaveSelectedFoodCommand implements ChefCommand {
 
     @Override
     public void execute(BufferedReader userInput, PrintWriter out, BufferedReader in) throws IOException {
-        System.out.print("Enter Food Item ID to add to Prepared Food Items: ");
+        System.out.println("\n--------------------------------------------------------------------\n");
+        System.out.println("Please choose the food item you'd like to prepare in today's kitchen: ");
+        System.out.print("Enter Food Id: ");
         out.println(Integer.parseInt(validateUserInput(userInput.readLine())));
         out.flush();
         ServerResponseService.printServerResponse(in);

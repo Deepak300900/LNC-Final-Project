@@ -29,7 +29,6 @@ public class FoodFeedbackHandleCommand implements EmployeeCommand {
 
     @Override
     public void execute() throws IOException, InvalidInputException {
-        System.out.println("Fetching today's prepared food items...");
         out.println(FETCH_PREPARED_ITEMS);
 
         List<Integer> foodItemIds = new ArrayList<>();
@@ -46,6 +45,7 @@ public class FoodFeedbackHandleCommand implements EmployeeCommand {
     }
 
     private void displayFoodItems(List<Integer> foodItemIds, List<String> foodItemNames) throws IOException {
+        System.out.println("\n------------------------------------------------------\n");
         System.out.println("Today Prepared Food Items: ");
         System.out.println("-------------------------------------------");
         System.out.printf("%-5s | %-20s | %-10s |%n", "ID", "Name", "Price");

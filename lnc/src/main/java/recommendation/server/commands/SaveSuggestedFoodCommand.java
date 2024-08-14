@@ -19,6 +19,6 @@ public class SaveSuggestedFoodCommand implements ChefCommand {
 
     @Override
     public void execute() throws IOException, SQLException {
-        new SuggestedFoodHelper(connection, in, out).addFoodItemToWillPrepare();
+        new SuggestedFoodHelper(connection, in, out).saveSuggestedFood();
     }
 }

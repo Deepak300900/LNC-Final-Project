@@ -18,7 +18,7 @@ public class SaveSelectedFoodHelper {
         this.out = out;
     }
 
-    public void addFoodItemToPrepared() throws IOException, SQLException {
+    public void saveSelectedFood() throws IOException, SQLException {
         try {
             int preparedFoodItemId = Integer.parseInt(in.readLine());
             

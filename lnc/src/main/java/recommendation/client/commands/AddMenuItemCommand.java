@@ -19,39 +19,47 @@ public class AddMenuItemCommand implements AdminCommand {
 
     @Override
     public void execute() throws IOException {
+        System.out.println("-------------------------------\n");
+        System.out.println("Please Enter Food Item details: \n");
         String name = getUserInput("Enter name: ");
         out.println(name);
         while (!isValidInput(name)) {
-            name = getUserInput("Enter name: ");
+            name = getUserInput("\nEnter name: ");
             out.println(name);
         }
 
-        String price = getUserInput("Enter price: ");
+        String price = getUserInput("\nEnter price: ");
         out.println(price);
         while (!isValidInput(price)) {
-            price = getUserInput("Enter price: ");
+            price = getUserInput("\nEnter price: ");
             out.println(price);
         }
 
-        String category = getUserInput("Enter category: ");
+        String category = getUserInput("\nSelect category: \n  1. Vegeterian\n  2. Eggterian\n  3. NonVegeterian\nEnter Choice ");
+        category = "1".equals(category) ? "Vegeterian" : "2".equals(category) ? "Eggterian" : "3".equals(category) ? "NonVegeterian" : "";
         out.println(category);
         while (!isValidInput(category)) {
-            category = getUserInput("Enter category: ");
+                category = getUserInput("\nSelect category: \n  1. Vegeterian\n  2. Eggterian\n  3. NonVegeterian\nEnter Choice ");
+                category = "1".equals(category) ? "Vegeterian" : "2".equals(category) ? "Eggterian" : "3".equals(category) ? "NonVegeterian" : "";
             out.println(category);
         }
 
-        String type = getUserInput("Enter type: ");
+        String type = getUserInput("\nEnter type: \n  1. Lunch\n  2. Breakfast\n  3. Dinner\nEnter Choice ");
+        type = "1".equals(type) ? "Lunch" : "2".equals(type) ? "Breakfast" : "3".equals(type) ? "Dinner" : "";
         out.println(type);
         while (!isValidInput(type)) {
-            type = getUserInput("Enter type: ");
-            out.println(type);
+                type = getUserInput("\nEnter type: \n  1. Lunch\n  2. Breakfast\n  3. Dinner\nEnter Choice ");
+                type = "1".equals(type) ? "Lunch" : "2".equals(type) ? "Breakfast" : "3".equals(type) ? "Dinner" : "";        
+                out.println(type);
         }
 
-        String test = getUserInput("Enter test: ");
+        String test = getUserInput("\nEnter test: \n  1. Sweet\n  2. Spicy\n  3. Salty\nEnter Choice ");
+        test =  "1".equals(test) ? "Sweet" : "2".equals(test) ? "Spicy" : "3".equals(test) ? "Salty" : "";
         out.println(test);
         while (!isValidInput(test)) {
-            test = getUserInput("Enter test: ");
-            out.println(test);
+                test = getUserInput("\nEnter test: \n  1. Sweet\n  2. Spicy\n  3. Salty\nEnter Choice ");
+                test =  "1".equals(test) ? "Sweet" : "2".equals(test) ? "Spicy" : "3".equals(test) ? "Salty" : "";
+                out.println(test);
         }
 
         System.out.println("=> " + in.readLine());

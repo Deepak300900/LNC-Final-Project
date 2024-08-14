@@ -65,9 +65,9 @@ public class FoodMenuHelper {
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(SHOW_MENU_SQL)) {
     
-            out.println("------------------------------------------------------------------------------------------------------");
-            out.printf("| %-5s | %-15s | %-8s | %-6s | %-20s | %-10s | %-15s |%n", "ID", "Name", "Price", "Rating", "Category", "Type", "Test");
-            out.println("------------------------------------------------------------------------------------------------------");
+            out.println("--------------------------------------------------------------------------------------");
+            out.printf("| %-5s | %-15s | %-8s | %-6s | %-10s | %-10s | %-10s |%n", "ID", "Name", "Price", "Rating", "Category", "Type", "Test");
+            out.println("--------------------------------------------------------------------------------------");
     
             while (rs.next()) {
                 int id = rs.getInt("id");
@@ -78,10 +78,10 @@ public class FoodMenuHelper {
                 String type = rs.getString("type");
                 String test = rs.getString("test");
     
-                out.printf("| %-5d | %-15s | %-8.2f | %-6.2f | %-20s | %-10s | %-15s |%n", id, name, price, rating, category, type, test);
+                out.printf("| %-5d | %-15s | %-8.2f | %-6.2f | %-10s | %-10s | %-10s |%n", id, name, price, rating, category, type, test);
             }
     
-            out.println("------------------------------------------------------------------------------------------------------");
+            out.println("--------------------------------------------------------------------------------------");
             out.println("End of Menu");
             out.flush();
         } catch (SQLException e) {
